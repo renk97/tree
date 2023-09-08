@@ -13,11 +13,11 @@ func GetTreeController(id int, root string) ([]model.IOTree, int) {
 	resp, err := model.GetTreeModel(id, root)
 
 	for _, tree := range resp {
-		struct_arr := strings.Split(tree.Struct, ",")
+		Leaves_arr := strings.Split(tree.Leaves, ",")
 		output := model.IOTree{
 			Id:     tree.Id,
 			Root:   tree.Root,
-			Struct: struct_arr,
+			Leaves: Leaves_arr,
 		}
 		out_arr = append(out_arr, output)
 	}
@@ -29,20 +29,14 @@ func GetTreeController(id int, root string) ([]model.IOTree, int) {
 	return out_arr, code
 }
 
-// func CreateTreeController(input model.IOTree) int {
-// 	code := http.StatusOK
+func CreateTreeController(input model.IOTree) int {
+	code := http.StatusOK
 
-// 	struct_arr := strings.Split(resp.Struct, ",")
-// 	output := model.IOTree{
-// 		Id:     resp.Id,
-// 		Root:   resp.Root,
-// 		Struct: struct_arr,
-// 	}
-// 	resp, err := model.CreateTreeModel()
+	err := model.CreateTreeModel(input)
 
-// 	if err != nil {
-// 		code = http.StatusInternalServerError
-// 	}
+	if err != nil {
+		code = http.StatusInternalServerError
+	}
 
-// 	return output, code
-// }
+	return code
+}
