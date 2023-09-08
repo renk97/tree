@@ -11,18 +11,6 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-type Tree struct {
-	Id     int
-	Root   string
-	Struct string
-}
-
-type OTree struct {
-	Id     int
-	Root   string
-	Struct []string
-}
-
 var db *gorm.DB
 
 func init() {
@@ -56,8 +44,23 @@ func init() {
 	db_pool.SetMaxOpenConns(100)
 }
 
-func GetTreeModel() (t Tree, err error) {
-	err = db.Table("Mtree").Find(&t).Error
+func GetTreeModel(id int, root string) (t []Tree, err error) {
+	raw := db.Table("Mtree")
+
+	if id != 0 {
+		raw = raw.Where("id = ?", id)
+	}
+	if root != "" {
+		raw = raw.Where("root = ?", root)
+	}
+
+	err = raw.Find(&t).Error
 
 	return
 }
+
+// func CreateTreeModel() (t Tree, err error) {
+// 	err = db.Table("Mtree").Find(&t).Error
+
+// 	return
+// }
