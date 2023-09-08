@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -49,8 +50,7 @@ func GetTreeModel(id int, root string) (t []Tree, err error) {
 
 	if id != 0 {
 		raw = raw.Where("id = ?", id)
-	}
-	if root != "" {
+	} else if root != "" {
 		raw = raw.Where("root = ?", root)
 	}
 
@@ -59,8 +59,15 @@ func GetTreeModel(id int, root string) (t []Tree, err error) {
 	return
 }
 
-// func CreateTreeModel() (t Tree, err error) {
-// 	err = db.Table("Mtree").Find(&t).Error
+func CreateTreeModel(input IOTree) (err error) {
+	Leaves_str := strings.Join(input.Leaves, ",")
+	data := Tree{
+		Id:     input.Id,
+		Root:   input.Root,
+		Leaves: Leaves_str,
+	}
 
-// 	return
-// }
+	err = db.Table("Mtree").Create(&data).Error
+
+	return
+}
