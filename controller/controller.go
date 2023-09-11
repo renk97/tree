@@ -52,3 +52,15 @@ func UpdateLeafController(input model.IOTree) int {
 
 	return code
 }
+
+func DeleteTreeController(id int, root string) int {
+	code := http.StatusOK
+
+	err := model.DeleteTreeModel(id, root)
+
+	if err != nil {
+		code = http.StatusInternalServerError
+	}
+
+	return code
+}
