@@ -2,22 +2,24 @@ package controller
 
 import (
 	"MTree/model"
+	"encoding/json"
+	"log"
 	"net/http"
-	"strings"
 )
 
-func GetTreeController(id int, root string) ([]model.IOTree, int) {
-	var out_arr []model.IOTree
-	code := http.StatusOK
+func GetTreeController(id int, root string) (out_arr []model.IOTree, code int) {
+	code = http.StatusOK
 
 	resp, err := model.GetTreeModel(id, root)
 
 	for _, tree := range resp {
-		Leaves_arr := strings.Split(tree.Leaves, ",")
-		output := model.IOTree{
-			Id:     tree.Id,
-			Root:   tree.Root,
-			Leaves: Leaves_arr,
+		var output model.IOTree
+
+		err := json.Unmarshal(tree.Leaves, &output)
+		output.Id = tree.Id
+		if err != nil {
+			log.Println(err)
+			return
 		}
 		out_arr = append(out_arr, output)
 	}
