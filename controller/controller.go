@@ -40,3 +40,15 @@ func CreateTreeController(input model.IOTree) int {
 
 	return code
 }
+
+func UpdateLeafController(input model.IOTree) int {
+	code := http.StatusOK
+
+	err := model.UpdateLeafModel(input)
+
+	if err != nil {
+		code = http.StatusInternalServerError
+	}
+
+	return code
+}
