@@ -71,3 +71,14 @@ func CreateTreeModel(input IOTree) (err error) {
 
 	return
 }
+
+func UpdateLeafModel(input IOTree) (err error) {
+	Leaves_str := strings.Join(input.Leaves, ",")
+	data := Tree{
+		Leaves: Leaves_str,
+	}
+
+	err = db.Table("Mtree").Where("root = ?", input.Root).Updates(&data).Error
+
+	return
+}
