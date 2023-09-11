@@ -48,3 +48,16 @@ func UpdateLeafRouter(c *gin.Context) {
 		"status":    code,
 	})
 }
+
+// 刪除樹
+func DeleteTreeRouter(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	root := c.Query("root")
+
+	code := controller.DeleteTreeController(id, root)
+
+	c.JSON(code, gin.H{
+		"tree_data": "",
+		"status":    code,
+	})
+}

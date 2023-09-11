@@ -82,3 +82,17 @@ func UpdateLeafModel(input IOTree) (err error) {
 
 	return
 }
+
+func DeleteTreeModel(id int, root string) (err error) {
+	raw := db.Table("Mtree")
+
+	if id != 0 {
+		raw = raw.Where("id = ?", id)
+	} else if root != "" {
+		raw = raw.Where("root = ?", root)
+	}
+
+	err = raw.Delete(&Tree{}).Error
+
+	return
+}
