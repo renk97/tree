@@ -1,10 +1,10 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -60,11 +60,17 @@ func GetTreeModel(id int, root string) (t []Tree, err error) {
 }
 
 func CreateTreeModel(input IOTree) (err error) {
-	Leaves_str := strings.Join(input.Leaves, ",")
+	// 整個資料轉json帶入
+	json_leaves, err := json.Marshal(input)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	data := Tree{
 		Id:     input.Id,
 		Root:   input.Root,
-		Leaves: Leaves_str,
+		Leaves: json_leaves,
 	}
 
 	err = db.Table("Mtree").Create(&data).Error
@@ -73,12 +79,18 @@ func CreateTreeModel(input IOTree) (err error) {
 }
 
 func UpdateLeafModel(input IOTree) (err error) {
-	Leaves_str := strings.Join(input.Leaves, ",")
-	data := Tree{
-		Leaves: Leaves_str,
+	json_leaves, err := json.Marshal(input)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 
-	err = db.Table("Mtree").Where("root = ?", input.Root).Updates(&data).Error
+	data := Tree{
+		Root:   input.Root,
+		Leaves: json_leaves,
+	}
+
+	err = db.Table("Mtree").Where("id = ?", input.Id).Updates(&data).Error
 
 	return
 }
