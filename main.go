@@ -13,5 +13,7 @@ func main() {
 	r.POST("/create_tree", router.CreateTreeRouter)
 	r.PATCH("/update_leaf", router.UpdateLeafRouter)
 	r.DELETE("/delete_tree", router.DeleteTreeRouter)
+
+	r.POST("/create_hash_tree", router.CreateHashTreeRouter)
 	r.Run(":80")
 }

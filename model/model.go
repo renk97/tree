@@ -45,20 +45,6 @@ func init() {
 	db_pool.SetMaxOpenConns(100)
 }
 
-func GetTreeModel(id int, root string) (t []Tree, err error) {
-	raw := db.Table("Mtree")
-
-	if id != 0 {
-		raw = raw.Where("id = ?", id)
-	} else if root != "" {
-		raw = raw.Where("root = ?", root)
-	}
-
-	err = raw.Find(&t).Error
-
-	return
-}
-
 func CreateTreeModel(input IOTree) (err error) {
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)
@@ -105,6 +91,57 @@ func DeleteTreeModel(id int, root string) (err error) {
 	}
 
 	err = raw.Delete(&Tree{}).Error
+
+	return
+}
+
+func CreateHashTreeModel(input interface{}) (err error) {
+	var raw *gorm.DB
+	var data Tree
+	// 整個資料轉json帶入
+	json_leaves, err := json.Marshal(input)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	switch v := input.(type) {
+	case IOTree:
+		data = Tree{
+			Id:     v.Id,
+			Root:   v.Root,
+			Leaves: json_leaves,
+		}
+		raw = db.Table("Mtree")
+	case HashIOTree:
+		data = Tree{
+			Id:     v.Id,
+			Root:   v.Root,
+			Leaves: json_leaves,
+		}
+		raw = db.Table("Mtree_hash")
+	}
+
+	err = raw.Create(&data).Error
+
+	return
+}
+
+func GetTreeModel(leaf_type string, id int, root string) (t []Tree, err error) {
+	table := "Mtree"
+	if leaf_type == "hash" {
+		table = "Mtree_hash"
+	}
+
+	raw := db.Table(table)
+
+	if id != 0 {
+		raw = raw.Where("id = ?", id)
+	} else if root != "" {
+		raw = raw.Where("root = ?", root)
+	}
+
+	err = raw.Find(&t).Error
 
 	return
 }
