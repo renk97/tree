@@ -122,11 +122,11 @@ func DeleteTreeModel(id int, root string) (err error) {
 }
 
 //======= Hash DB operator =======
+// 結構與明碼相同，僅 table 不同
 // Create
 // update
 
-func CreateHashTreeModel(input HashIOTree) (err error) {
-	var data Tree
+func CreateHashTreeModel(input IOTree) (err error) {
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)
 	if err != nil {
@@ -134,8 +134,7 @@ func CreateHashTreeModel(input HashIOTree) (err error) {
 		return
 	}
 
-	data = Tree{
-		Id:     input.Id,
+	data := Tree{
 		Root:   input.Root,
 		Leaves: json_leaves,
 	}
@@ -145,16 +144,14 @@ func CreateHashTreeModel(input HashIOTree) (err error) {
 	return
 }
 
-func UpdateHashTreeModel(input HashIOTree) (err error) {
-	var data Tree
-	// 整個資料轉json帶入
+func UpdateHashTreeModel(input IOTree) (err error) {
 	json_leaves, err := json.Marshal(input)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	data = Tree{
+	data := Tree{
 		Root:   input.Root,
 		Leaves: json_leaves,
 	}
