@@ -65,7 +65,7 @@ func DeleteTreeRouter(c *gin.Context) {
 
 // 新增 hash leaf 樹
 func CreateHashTreeRouter(c *gin.Context) {
-	var input model.HashIOTree
+	var input model.IOTree
 	c.Bind(&input)
 
 	code := controller.CreateHashTreeController(input)
@@ -78,7 +78,7 @@ func CreateHashTreeRouter(c *gin.Context) {
 
 // 修改 hash leaf 樹
 func UpdateHashTreeRouter(c *gin.Context) {
-	var input model.HashIOTree
+	var input model.IOTree
 	c.Bind(&input)
 
 	code := controller.UpdateHashTreeController(input)

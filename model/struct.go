@@ -14,11 +14,13 @@ type IOTree struct {
 	Leaves []string `json:"leaves"`
 }
 
+// pending
 type Leaf struct {
 	Words    []string `json:"words"`
 	SigBytes int      `json:"sigBytes"`
 }
 
+// pending
 type HashIOTree struct {
 	Id     int    `json:"id"`
 	Root   string `json:"root"`
