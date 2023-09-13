@@ -12,6 +12,8 @@ import (
 	"gorm.io/gorm/schema"
 )
 
+//======= DB connection =======
+
 var db *gorm.DB
 
 func init() {
@@ -43,6 +45,30 @@ func init() {
 
 	db_pool.SetMaxIdleConns(10)
 	db_pool.SetMaxOpenConns(100)
+}
+
+//======= DB operator =======
+// Get
+// Create
+// update
+
+func GetTreeModel(leaf_type string, id int, root string) (t []Tree, err error) {
+	table := "Mtree"
+	if leaf_type == "hash" {
+		table = "Mtree_hash"
+	}
+
+	raw := db.Table(table)
+
+	if id != 0 {
+		raw = raw.Where("id = ?", id)
+	} else if root != "" {
+		raw = raw.Where("root = ?", root)
+	}
+
+	err = raw.Find(&t).Error
+
+	return
 }
 
 func CreateTreeModel(input IOTree) (err error) {
@@ -95,8 +121,11 @@ func DeleteTreeModel(id int, root string) (err error) {
 	return
 }
 
+//======= Hash DB operator =======
+// Create
+// update
+
 func CreateHashTreeModel(input HashIOTree) (err error) {
-	//var raw *gorm.DB
 	var data Tree
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)
@@ -116,21 +145,21 @@ func CreateHashTreeModel(input HashIOTree) (err error) {
 	return
 }
 
-func GetTreeModel(leaf_type string, id int, root string) (t []Tree, err error) {
-	table := "Mtree"
-	if leaf_type == "hash" {
-		table = "Mtree_hash"
+func UpdateHashTreeModel(input HashIOTree) (err error) {
+	var data Tree
+	// 整個資料轉json帶入
+	json_leaves, err := json.Marshal(input)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 
-	raw := db.Table(table)
-
-	if id != 0 {
-		raw = raw.Where("id = ?", id)
-	} else if root != "" {
-		raw = raw.Where("root = ?", root)
+	data = Tree{
+		Root:   input.Root,
+		Leaves: json_leaves,
 	}
 
-	err = raw.Find(&t).Error
+	err = db.Table("Mtree_hash").Where("id = ?", input.Id).Updates(&data).Error
 
 	return
 }
