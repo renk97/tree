@@ -7,6 +7,44 @@ import (
 	"net/http"
 )
 
+func GetTreeController(leaf_type string, id int, root string) (out_arr []interface{}, code int) {
+	code = http.StatusOK
+
+	resp, err := model.GetTreeModel(leaf_type, id, root)
+	if err != nil {
+		code = http.StatusInternalServerError
+	}
+
+	switch leaf_type {
+	case "hash":
+		for _, tree := range resp {
+			var output model.HashIOTree
+
+			err := json.Unmarshal(tree.Leaves, &output)
+			output.Id = tree.Id
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			out_arr = append(out_arr, output)
+		}
+	default:
+		for _, tree := range resp {
+			var output model.IOTree
+
+			err := json.Unmarshal(tree.Leaves, &output)
+			output.Id = tree.Id
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			out_arr = append(out_arr, output)
+		}
+	}
+
+	return out_arr, code
+}
+
 func CreateTreeController(input model.IOTree) int {
 	code := http.StatusOK
 
@@ -55,40 +93,14 @@ func CreateHashTreeController(input model.HashIOTree) int {
 	return code
 }
 
-func GetTreeController(leaf_type string, id int, root string) (out_arr []interface{}, code int) {
-	code = http.StatusOK
+func UpdateHashTreeController(input model.HashIOTree) int {
+	code := http.StatusOK
 
-	resp, err := model.GetTreeModel(leaf_type, id, root)
+	err := model.UpdateHashTreeModel(input)
+
 	if err != nil {
 		code = http.StatusInternalServerError
 	}
 
-	switch leaf_type {
-	case "hash":
-		for _, tree := range resp {
-			var output model.HashIOTree
-
-			err := json.Unmarshal(tree.Leaves, &output)
-			output.Id = tree.Id
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			out_arr = append(out_arr, output)
-		}
-	default:
-		for _, tree := range resp {
-			var output model.IOTree
-
-			err := json.Unmarshal(tree.Leaves, &output)
-			output.Id = tree.Id
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			out_arr = append(out_arr, output)
-		}
-	}
-
-	return out_arr, code
+	return code
 }
