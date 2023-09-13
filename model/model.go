@@ -126,7 +126,6 @@ func DeleteTreeModel(id int, root string) (err error) {
 // update
 
 func CreateHashTreeModel(input HashIOTree) (err error) {
-	//var raw *gorm.DB
 	var data Tree
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)
@@ -147,7 +146,6 @@ func CreateHashTreeModel(input HashIOTree) (err error) {
 }
 
 func UpdateHashTreeModel(input HashIOTree) (err error) {
-	//var raw *gorm.DB
 	var data Tree
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)

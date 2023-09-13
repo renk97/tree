@@ -15,6 +15,7 @@ func GetTreeController(leaf_type string, id int, root string) (out_arr []interfa
 		code = http.StatusInternalServerError
 	}
 
+	// 依照 leaf_type 參數決定撈取的資料型別
 	switch leaf_type {
 	case "hash":
 		for _, tree := range resp {
