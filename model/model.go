@@ -95,8 +95,8 @@ func DeleteTreeModel(id int, root string) (err error) {
 	return
 }
 
-func CreateHashTreeModel(input interface{}) (err error) {
-	var raw *gorm.DB
+func CreateHashTreeModel(input HashIOTree) (err error) {
+	//var raw *gorm.DB
 	var data Tree
 	// 整個資料轉json帶入
 	json_leaves, err := json.Marshal(input)
@@ -105,24 +105,13 @@ func CreateHashTreeModel(input interface{}) (err error) {
 		return
 	}
 
-	switch v := input.(type) {
-	case IOTree:
-		data = Tree{
-			Id:     v.Id,
-			Root:   v.Root,
-			Leaves: json_leaves,
-		}
-		raw = db.Table("Mtree")
-	case HashIOTree:
-		data = Tree{
-			Id:     v.Id,
-			Root:   v.Root,
-			Leaves: json_leaves,
-		}
-		raw = db.Table("Mtree_hash")
+	data = Tree{
+		Id:     input.Id,
+		Root:   input.Root,
+		Leaves: json_leaves,
 	}
 
-	err = raw.Create(&data).Error
+	err = db.Table("Mtree_hash").Create(&data).Error
 
 	return
 }
